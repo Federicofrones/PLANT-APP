@@ -4,15 +4,12 @@ import { useState, useEffect } from "react";
 import {
     collection,
     onSnapshot,
-    query,
-    orderBy,
     updateDoc,
     doc,
     Timestamp,
     runTransaction,
     increment,
     getDoc,
-    where,
     arrayUnion
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
