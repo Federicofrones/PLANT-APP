@@ -1,101 +1,145 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Leaf,
+  LogIn,
+  Loader2,
+  Clock,
+  Droplets,
+  LayoutGrid
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
+import GlassCard from "@/components/ui/GlassCard";
+
+const LandingPage = () => {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-emerald-500" />
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center p-6 pb-20 pt-10">
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Hero Content */}
+      <div className="w-full max-w-7xl mx-auto flex flex-col items-center text-center space-y-12">
+
+        {/* Animated Brand */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col items-center gap-4 group cursor-default"
+        >
+          <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.1)] group-hover:shadow-[0_0_80px_rgba(16,185,129,0.2)] transition-shadow duration-700">
+            <Leaf size={48} className="fill-emerald-400/20 group-hover:scale-110 transition-transform duration-700" />
+          </div>
+          <div className="space-y-0.5">
+            <h1 className="text-5xl md:text-7xl font-black text-emerald-50 tracking-tighter uppercase italic drop-shadow-2xl">
+              Green<span className="text-emerald-500">Glass</span>
+            </h1>
+            <p className="text-sm md:text-base text-white/30 tracking-[0.4em] font-bold uppercase leading-none">Guardian de la Vida</p>
+          </div>
+        </motion.div>
+
+        {/* Feature Highlights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl px-4">
+          {[
+            { icon: <Clock size={20} />, title: "Recordatorios", desc: "No vuelvas a olvidar un riego" },
+            { icon: <Droplets size={20} />, title: "Seguimiento", desc: "Historial y ciclo de hidratación" },
+            { icon: <LayoutGrid size={20} />, title: "30 Plantas", desc: "Gestión personal ilimitada hasta 30" }
+          ].map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + idx * 0.1 }}
+            >
+              <GlassCard className="p-6 border-white/5 bg-white/2 hover:bg-white/5 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-4 mx-auto">
+                  {item.icon}
+                </div>
+                <h3 className="text-sm font-bold text-white tracking-tight uppercase mb-1">{item.title}</h3>
+                <p className="text-xs text-white/40 font-medium">{item.desc}</p>
+              </GlassCard>
+            </motion.div>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {/* Login CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="w-full max-w-sm"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <GlassCard className="p-8 border-white/10 shadow-2xl space-y-6 bg-white/5 backdrop-blur-3xl">
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold text-emerald-50">Comienza Hoy</h2>
+              <p className="text-sm text-white/40">Accede a tu invernadero personal en la nube.</p>
+            </div>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => router.push("/login")}
+                className="w-full py-4 rounded-2xl bg-white text-black font-black flex items-center justify-center gap-3 hover:bg-emerald-50 transition-all transform active:scale-95 shadow-xl shadow-white/5"
+              >
+                <LogIn size={20} /> Entrar
+              </button>
+
+              <div className="flex items-center gap-4 py-2">
+                <div className="h-px bg-white/10 flex-1" />
+                <span className="text-[10px] text-white/20 font-bold uppercase tracking-widest">o crea tu cuenta</span>
+                <div className="h-px bg-white/10 flex-1" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                <button
+                  onClick={() => router.push("/register")}
+                  className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold flex items-center justify-center gap-3 hover:bg-white/10 transition-colors"
+                >
+                  Registrarme
+                </button>
+              </div>
+            </div>
+
+            <p className="text-[10px] text-white/20 uppercase tracking-tighter leading-relaxed">
+              Al entrar, aceptas que esta es una herramienta <br /> de uso personal y educativo.
+            </p>
+          </GlassCard>
+        </motion.div>
+
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-[10px] font-black uppercase tracking-[0.2em] text-white/10 flex items-center gap-3"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <span>GreenGlass v1.0.0</span>
+          <div className="w-1 h-1 rounded-full bg-white/10" />
+          <span>Local Stable Build</span>
+        </motion.div>
+      </div>
+
+      {/* Background Orbs (Client side only decorative) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
     </div>
   );
-}
+};
+
+export default LandingPage;
