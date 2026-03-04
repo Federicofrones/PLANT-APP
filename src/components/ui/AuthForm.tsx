@@ -16,7 +16,8 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     updateProfile,
-    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     GoogleAuthProvider
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -76,17 +77,32 @@ const AuthForm = ({ type }: AuthFormProps) => {
         }
     };
 
+    React.useEffect(() => {
+        const checkRedirect = async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (result) {
+                    router.push("/dashboard");
+                }
+            } catch (err) {
+                console.error("Error handling redirect:", err);
+                setError("Error al procesar el inicio de sesión.");
+            }
+        };
+        checkRedirect();
+    }, [router]);
+
     const handleGoogleLogin = async () => {
         setLoading(true);
         setError(null);
         try {
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
-            router.push("/dashboard");
+            // signInWithPopup is often blocked in Android Standalone/PWA mode.
+            // signInWithRedirect handles it by redirecting the whole window.
+            await signInWithRedirect(auth, provider);
         } catch (err: unknown) {
             console.error(err);
             setError("Error al iniciar con Google.");
-        } finally {
             setLoading(false);
         }
     };
