@@ -4,10 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     Plus,
-    Search,
-    LayoutGrid,
-    List,
-    Leaf,
     Clock,
     Search as SearchIcon,
     Sprout,
@@ -73,17 +69,12 @@ const Dashboard = () => {
         setIsModalOpen(true);
     };
 
-    const handleSavePlant = async (plantData: any) => {
+    const handleSavePlant = async (plantData: Partial<Plant>) => {
         if (editingPlant) {
-            await updateProjectedPlant(editingPlant.id, plantData);
+            await updatePlant(editingPlant.id, plantData);
         } else {
-            await addPlant(plantData);
+            await addPlant(plantData as Omit<Plant, "id" | "createdAt" | "nextWaterAt">);
         }
-    };
-
-    // Wrapper for update because of naming conflict in hook
-    const updateProjectedPlant = async (id: string, data: any) => {
-        await updatePlant(id, data);
     };
 
     return (

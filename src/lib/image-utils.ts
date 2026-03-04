@@ -50,10 +50,7 @@ export const uploadPlantImage = async (uid: string, plantId: string, file: File)
         const data = await response.json();
 
         // Cloudinary URL transformations for premium performance
-        // q_auto: quality auto, f_auto: format auto (webp/avif), w_1400: width 1400
         const fullUrl = data.secure_url.replace("/upload/", "/upload/f_auto,q_auto,w_1400/");
-
-        // Thumb version: Square crop, auto face/center, width 450
         const thumbUrl = data.secure_url.replace("/upload/", "/upload/f_auto,q_auto,w_450,c_fill,g_auto/");
 
         return { fullUrl, thumbUrl, publicId: data.public_id };
@@ -63,8 +60,7 @@ export const uploadPlantImage = async (uid: string, plantId: string, file: File)
     }
 };
 
-export const deletePlantImages = async (_uid: string, _plantId: string) => {
+export const deletePlantImages = async (uid: string, plantId: string) => {
     // Client-side deletion in Cloudinary is not recommended without a backend/signing.
-    // We leave this documented: To delete, you'd usually use a Server Action and Cloudinary's Admin API.
-    console.log("Delete plant hook called. Manual Cloudinary cleanup required or use a Server Action.");
+    console.log(`Manual Cloudinary cleanup required for user ${uid}, plant ${plantId} or use a Server Action.`);
 };
