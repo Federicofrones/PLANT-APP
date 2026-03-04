@@ -140,7 +140,7 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
             await onSave({
                 ...formData,
                 tags,
-                lastWateredAt: Timestamp.fromDate(new Date(formData.lastWateredAt)),
+                lastWateredAt: Timestamp.fromDate(new Date(formData.lastWateredAt + "T12:00:00")),
                 photo: photoData,
             });
 
@@ -209,7 +209,6 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         accept="image/*"
-                        capture="environment"
                         className="hidden"
                     />
                 </div>

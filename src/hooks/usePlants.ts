@@ -35,22 +35,42 @@ export const usePlants = (includeArchived = false) => {
         }
 
         const plantsRef = collection(db, "users", user.uid, "plants");
-        let q = query(plantsRef, orderBy("nextWaterAt", "asc"));
+        // Simplified query to avoid missing index errors in production
+        const unsubscribe = onSnapshot(plantsRef, (snapshot) => {
+            try {
+                const plantList = snapshot.docs.map(docSnap => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        ...data,
+                        // Ensure defaults for critical fields
+                        isArchived: data.isArchived ?? false,
+                        wateringHistory: data.wateringHistory ?? [],
+                        extraTasks: data.extraTasks ?? [],
+                    } as Plant;
+                });
 
-        if (!includeArchived) {
-            q = query(plantsRef, where("isArchived", "==", false), orderBy("nextWaterAt", "asc"));
-        }
+                const filtered = includeArchived
+                    ? plantList
+                    : plantList.filter(p => !p.isArchived);
 
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const plantList = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as Plant[];
-            setPlants(plantList);
-            setLoading(false);
+                const sorted = filtered.sort((a, b) => {
+                    const timeA = a.nextWaterAt?.toDate()?.getTime() || 0;
+                    const timeB = b.nextWaterAt?.toDate()?.getTime() || 0;
+                    return timeA - timeB;
+                });
+
+                setPlants(sorted);
+                setError(null);
+            } catch (err) {
+                console.error("Processing plants error:", err);
+                setError("Error al procesar la lista de plantas.");
+            } finally {
+                setLoading(false);
+            }
         }, (err) => {
-            console.error("Error fetching plants:", err);
-            setError("Failed to fetch plants.");
+            console.error("Firebase Subscription Error:", err);
+            setError("Error de conexión con la base de datos.");
             setLoading(false);
         });
 
@@ -83,7 +103,7 @@ export const usePlants = (includeArchived = false) => {
                 nextWaterAt: Timestamp.fromDate(nextWaterAt),
             });
 
-            transaction.update(userRef, { plantCount: increment(1) });
+            transaction.set(userRef, { plantCount: increment(1) }, { merge: true });
         });
     };
 

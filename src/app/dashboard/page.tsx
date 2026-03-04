@@ -15,7 +15,8 @@ import {
     Copy,
     Bell,
     Download,
-    Settings
+    Settings,
+    AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,7 +49,8 @@ const Dashboard = () => {
         completeTask,
         exportBackup,
         importBackup,
-        isLimitReached
+        isLimitReached,
+        error: plantsError
     } = usePlants();
     const router = useRouter();
 
@@ -181,6 +183,13 @@ const Dashboard = () => {
             <div className="pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto space-y-8">
 
                 <WeatherBar />
+
+                {plantsError && (
+                    <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl text-red-200 text-sm flex items-center gap-3">
+                        <AlertCircle size={18} className="shrink-0" />
+                        {plantsError}
+                    </div>
+                )}
 
                 {/* Hero section */}
                 <section className="space-y-6">
