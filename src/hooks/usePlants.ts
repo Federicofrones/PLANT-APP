@@ -158,15 +158,23 @@ export const usePlants = (includeArchived = false) => {
     };
 
     const duplicatePlant = async (plant: Plant) => {
-        const data = { ...plant } as any;
-        delete data.id;
-        delete data.createdAt;
-        delete data.nextWaterAt;
+        const cleanData: Omit<Plant, "id" | "createdAt" | "nextWaterAt"> = {
+            nickname: `${plant.nickname} (Copia)`,
+            plantType: plant.plantType,
+            location: plant.location,
+            waterEveryDays: plant.waterEveryDays,
+            lastWateredAt: plant.lastWateredAt,
+            notes: plant.notes,
+            photo: plant.photo,
+            isOutdoor: plant.isOutdoor,
+            light: plant.light,
+            tags: plant.tags,
+            wateringHistory: [],
+            isArchived: false,
+            extraTasks: [],
+        };
 
-        return await addPlant({
-            ...data,
-            nickname: `${data.nickname} (Copia)`
-        } as Omit<Plant, "id" | "createdAt" | "nextWaterAt">);
+        return await addPlant(cleanData);
     };
 
     const addTask = async (plantId: string, task: Omit<Plant['extraTasks'][0], 'id' | 'lastDoneAt' | 'nextDueAt'>) => {
@@ -234,11 +242,22 @@ export const usePlants = (includeArchived = false) => {
             // We use batching or just sequential addPlant (transactional)
             // For now, let's just alert success and start adding
             for (const p of importedPlants) {
-                const data = { ...p } as any;
-                delete data.id;
-                delete data.createdAt;
-                delete data.nextWaterAt;
-                await addPlant(data as Omit<Plant, "id" | "createdAt" | "nextWaterAt">);
+                const cleanData: Omit<Plant, "id" | "createdAt" | "nextWaterAt"> = {
+                    nickname: p.nickname,
+                    plantType: p.plantType,
+                    location: p.location,
+                    waterEveryDays: p.waterEveryDays,
+                    lastWateredAt: p.lastWateredAt,
+                    notes: p.notes,
+                    photo: p.photo,
+                    isOutdoor: p.isOutdoor,
+                    light: p.light,
+                    tags: p.tags,
+                    wateringHistory: p.wateringHistory || [],
+                    isArchived: p.isArchived || false,
+                    extraTasks: p.extraTasks || [],
+                };
+                await addPlant(cleanData);
             }
         } catch (err) {
             console.error("Import error:", err);

@@ -20,7 +20,7 @@ import {
     Check
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plant, WateringEvent } from "@/lib/types";
+import { Plant } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Modal from "@/components/ui/Modal";
 import GlassCard from "@/components/ui/GlassCard";
