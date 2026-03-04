@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import React, { useState, useEffect } from "react";
 import {
     Droplets,
@@ -64,10 +66,12 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete }: PlantCardProps) => {
             <GlassCard className="h-full flex flex-col">
                 {/* Plant Image Container */}
                 <div className="relative h-48 w-full overflow-hidden bg-emerald-950/20">
-                    <img
+                    <Image
                         src={plant.photo.thumbUrl}
                         alt={plant.nickname}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0c0a]/80 via-transparent to-transparent" />
 

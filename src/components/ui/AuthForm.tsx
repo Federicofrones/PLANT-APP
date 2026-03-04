@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import React, { useState } from "react";
 import {
     LogIn,
@@ -200,7 +202,12 @@ const AuthForm = ({ type }: AuthFormProps) => {
                 disabled={loading}
                 className="w-full py-4 rounded-xl bg-white text-black font-black flex items-center justify-center gap-3 hover:bg-emerald-50 transition-all border border-white/10"
             >
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+                <Image
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google"
+                    width={20}
+                    height={20}
+                />
                 Continuar con Google
             </button>
 

@@ -25,7 +25,7 @@ export function calculateWateringStatus(
     weather?: WeatherInfo
 ) {
     const now = new Date();
-    let total = nextWaterAt.getTime() - lastWateredAt.getTime();
+    const total = nextWaterAt.getTime() - lastWateredAt.getTime();
     let elapsed = now.getTime() - lastWateredAt.getTime();
 
     // Smart adjustment for outdoors

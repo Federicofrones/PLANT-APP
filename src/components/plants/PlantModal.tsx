@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import React, { useState, useRef, useEffect } from "react";
 import {
     Camera,
@@ -141,7 +143,12 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                         )}
                     >
                         {previewUrl ? (
-                            <img src={previewUrl} className="w-full h-full object-cover" alt="Preview" />
+                            <Image
+                                src={previewUrl}
+                                alt="Preview"
+                                fill
+                                className="object-cover"
+                            />
                         ) : (
                             <>
                                 <div className="p-3 rounded-full bg-emerald-500/10 text-emerald-400">

@@ -5,6 +5,8 @@ import { LogOut, Leaf, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import GlassCard from "@/components/ui/GlassCard";
 
+import Image from "next/image";
+
 const Navbar = () => {
     const { user, logout } = useAuth();
 
@@ -31,9 +33,14 @@ const Navbar = () => {
                                     <span className="text-xs font-bold text-white/70">{user.displayName || "Admin"}</span>
                                     <span className="text-[9px] text-white/30 uppercase tracking-widest">{user.email}</span>
                                 </div>
-                                <div className="w-8 h-8 rounded-full border border-white/10 overflow-hidden bg-white/5 flex items-center justify-center">
+                                <div className="w-8 h-8 rounded-full border border-white/10 overflow-hidden bg-white/5 flex items-center justify-center relative">
                                     {user.photoURL ? (
-                                        <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
+                                        <Image
+                                            src={user.photoURL}
+                                            alt="Profile"
+                                            fill
+                                            className="object-cover"
+                                        />
                                     ) : (
                                         <UserIcon size={14} className="text-white/20" />
                                     )}
