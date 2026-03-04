@@ -115,27 +115,43 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete }: PlantCardProps) => {
                     </div>
 
                     <div className="space-y-4">
-                        {/* Progress Bar */}
-                        <div className="space-y-1.5">
-                            <div className="flex justify-between items-end text-[10px] uppercase tracking-widest font-bold">
+                        {/* Hose-style Progress Bar */}
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-end text-[10px] uppercase tracking-widest font-black">
                                 <span className="text-white/30">Nivel de Agua</span>
                                 <span className={cn(
-                                    "font-mono",
+                                    "font-mono flex items-center gap-1",
                                     diffDays < 0 ? "text-red-400" : diffDays === 0 ? "text-amber-400" : "text-emerald-400"
                                 )}>
+                                    <Droplets size={10} className="animate-pulse" />
                                     {Math.round((1 - progress) * 100)}%
                                 </span>
                             </div>
-                            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
+
+                            {/* The Hose */}
+                            <div className="relative w-full h-4 bg-black/40 rounded-full border-2 border-emerald-950/50 p-[2px] shadow-inner overflow-hidden group/hose">
+                                {/* Water Flow */}
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${(1 - progress) * 100}%` }}
-                                    transition={{ duration: 1, ease: "easeOut" }}
+                                    transition={{ duration: 1.5, ease: "easeInOut" }}
                                     className={cn(
-                                        "h-full rounded-full shadow-[0_0_10px_rgba(255,255,255,0.1)]",
-                                        diffDays < 0 ? "bg-red-500" : diffDays === 0 ? "bg-amber-500" : "bg-emerald-500"
+                                        "h-full rounded-full relative overflow-hidden",
+                                        diffDays < 0 ? "bg-red-500/80" : diffDays === 0 ? "bg-amber-500/80" : "bg-emerald-500/80"
                                     )}
-                                />
+                                >
+                                    {/* Wave Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+
+                                    {/* Small Bubbles */}
+                                    <div className="absolute inset-y-0 right-2 flex items-center gap-1 opacity-40">
+                                        <div className="w-1 h-1 bg-white rounded-full animate-ping" />
+                                        <div className="w-0.5 h-0.5 bg-white rounded-full animate-ping delay-75" />
+                                    </div>
+                                </motion.div>
+
+                                {/* Nozzle / End of hose */}
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-5 bg-emerald-700 rounded-sm border border-emerald-900 group-hover/hose:scale-110 transition-transform" />
                             </div>
                         </div>
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import GreenhouseBackground from "@/components/layout/GreenhouseBackground";
+import FallingLeaves from "@/components/ui/FallingLeaves";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,8 +32,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark scroll-smooth">
-      <body className={`${inter.className} custom-scrollbar bg-[#0a0c0a]`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Restore scroll position on PWA return
+              if (typeof window !== 'undefined') {
+                window.addEventListener('load', () => {
+                  const scrollPos = sessionStorage.getItem('scrollPos');
+                  if (scrollPos) window.scrollTo(0, parseInt(scrollPos));
+                });
+                window.addEventListener('scroll', () => {
+                  sessionStorage.setItem('scrollPos', window.scrollY.toString());
+                });
+              }
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.className} custom-scrollbar bg-[#0a0c0a] antialiased`}>
         <GreenhouseBackground />
+        <FallingLeaves />
         <main className="relative z-0 min-h-screen">
           {children}
         </main>
