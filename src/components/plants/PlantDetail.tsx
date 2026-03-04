@@ -4,14 +4,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import {
     Droplets,
-    Calendar,
     Sprout,
     MapPin,
     Tag as TagIcon,
-    Moon,
     X,
     QrCode,
-    Download,
     Clock,
     History,
     ChevronRight,
@@ -34,7 +31,7 @@ interface PlantDetailProps {
     isOpen: boolean;
     onClose: () => void;
     onWater: (plant: Plant) => void;
-    onAddTask: (plantId: string, task: any) => Promise<void>;
+    onAddTask: (plantId: string, task: { type: string, frequencyDays: number }) => Promise<void>;
     onCompleteTask: (plantId: string, taskId: string) => Promise<void>;
     onUpdatePlant: (plantId: string, updates: Partial<Plant>) => Promise<void>;
 }
@@ -137,7 +134,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                     ].map((tab) => (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id as any)}
+                            onClick={() => setActiveTab(tab.id as 'info' | 'history' | 'tasks')}
                             className={cn(
                                 "flex-1 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
                                 activeTab === tab.id ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:bg-white/5"

@@ -1,20 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
     Plus,
-    Clock,
     Search as SearchIcon,
     Sprout,
     Droplets,
     Loader2,
     Route,
-    CheckCircle2,
     ChevronRight,
     ChevronLeft,
-    Trash2,
-    Archive,
     Copy,
     Bell,
     Download,
@@ -104,8 +101,9 @@ const Dashboard = () => {
             try {
                 await importBackup(event.target?.result as string);
                 showToast("Backup importado con éxito");
-            } catch (err: any) {
-                showToast(err.message, 'error');
+            } catch (err) {
+                const message = err instanceof Error ? err.message : "Error desconocido";
+                showToast(message, 'error');
             }
         };
         reader.readAsText(file);
@@ -301,10 +299,11 @@ const Dashboard = () => {
                             </div>
 
                             <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-8 border-white/5 shadow-2xl">
-                                <img
+                                <Image
                                     src={currentRoutePlant.photo.fullUrl}
                                     alt={currentRoutePlant.nickname}
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
                                 />
                             </div>
 

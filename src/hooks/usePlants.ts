@@ -158,11 +158,15 @@ export const usePlants = (includeArchived = false) => {
     };
 
     const duplicatePlant = async (plant: Plant) => {
-        const { id, createdAt, nextWaterAt, ...data } = plant;
+        const data = { ...plant } as any;
+        delete data.id;
+        delete data.createdAt;
+        delete data.nextWaterAt;
+
         return await addPlant({
             ...data,
             nickname: `${data.nickname} (Copia)`
-        });
+        } as Omit<Plant, "id" | "createdAt" | "nextWaterAt">);
     };
 
     const addTask = async (plantId: string, task: Omit<Plant['extraTasks'][0], 'id' | 'lastDoneAt' | 'nextDueAt'>) => {
@@ -230,8 +234,11 @@ export const usePlants = (includeArchived = false) => {
             // We use batching or just sequential addPlant (transactional)
             // For now, let's just alert success and start adding
             for (const p of importedPlants) {
-                const { id, createdAt, nextWaterAt, ...data } = p;
-                await addPlant(data as any);
+                const data = { ...p } as any;
+                delete data.id;
+                delete data.createdAt;
+                delete data.nextWaterAt;
+                await addPlant(data as Omit<Plant, "id" | "createdAt" | "nextWaterAt">);
             }
         } catch (err) {
             console.error("Import error:", err);

@@ -11,11 +11,8 @@ import {
     Sprout,
     Archive,
     Copy,
-    BellOff,
     MapPin,
-    Tag as TagIcon,
     Moon,
-    UserCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plant } from "@/lib/types";

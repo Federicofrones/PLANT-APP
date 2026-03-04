@@ -4,12 +4,9 @@ import React, { useState } from "react";
 import {
     Filter,
     Sun,
-    Cloud,
-    CloudSun,
     Home,
     MapPin,
     Tag as TagIcon,
-    X,
     FilterX
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -93,7 +90,7 @@ const FilterBar = ({ onFilterChange, availableLocations, availableTags }: Filter
                                     {['all', 'interior', 'exterior'].map((env) => (
                                         <button
                                             key={env}
-                                            onClick={() => updateFilter({ environment: env as any })}
+                                            onClick={() => updateFilter({ environment: env as PlantFilters['environment'] })}
                                             className={cn(
                                                 "flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all",
                                                 filters.environment === env ? "bg-white text-emerald-950" : "text-white/30 hover:text-white/60"
@@ -114,7 +111,7 @@ const FilterBar = ({ onFilterChange, availableLocations, availableTags }: Filter
                                     {['all', 'sol', 'sombra', 'semisombra'].map((l) => (
                                         <button
                                             key={l}
-                                            onClick={() => updateFilter({ light: l as any })}
+                                            onClick={() => updateFilter({ light: l as PlantFilters['light'] })}
                                             className={cn(
                                                 "flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all",
                                                 filters.light === l ? "bg-white text-emerald-950" : "text-white/30 hover:text-white/60"
