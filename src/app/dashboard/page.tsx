@@ -449,6 +449,10 @@ const Dashboard = () => {
                         await updatePlant(id, u);
                         showToast("Propiedades actualizadas");
                     }}
+                    onDeletePlant={async (id) => {
+                        setPlantToDelete(id);
+                        setSelectedPlant(null);
+                    }}
                 />
 
                 <ConfirmModal

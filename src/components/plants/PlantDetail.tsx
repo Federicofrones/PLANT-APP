@@ -17,7 +17,8 @@ import {
     Cloud,
     CloudSun,
     CheckCircle2,
-    Check
+    Check,
+    Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plant } from "@/lib/types";
@@ -34,10 +35,12 @@ interface PlantDetailProps {
     onAddTask: (plantId: string, task: { type: string, frequencyDays: number }) => Promise<void>;
     onCompleteTask: (plantId: string, taskId: string) => Promise<void>;
     onUpdatePlant: (plantId: string, updates: Partial<Plant>) => Promise<void>;
+    onDeletePlant: (plantId: string) => Promise<void>;
 }
 
-const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTask, onUpdatePlant }: PlantDetailProps) => {
+const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTask, onUpdatePlant, onDeletePlant }: PlantDetailProps) => {
     const [activeTab, setActiveTab] = useState<'info' | 'history' | 'tasks'>('info');
+    const [isDeleting, setIsDeleting] = useState(false);
     const [isAddingTask, setIsAddingTask] = useState(false);
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskDays, setNewTaskDays] = useState(30);
@@ -387,12 +390,43 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                 </div>
 
                 {/* Main Action */}
-                <button
-                    onClick={() => onWater(plant)}
-                    className="w-full py-5 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:shadow-[0_15px_40px_rgba(16,185,129,0.5)] transition-all transform active:scale-95 text-xs"
-                >
-                    <Droplets size={20} className="animate-pulse" /> Marcar como regada
-                </button>
+                <div className="flex flex-col gap-3">
+                    <button
+                        onClick={() => onWater(plant)}
+                        className="w-full py-5 rounded-2xl bg-emerald-500 text-white font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:shadow-[0_15px_40px_rgba(16,185,129,0.5)] transition-all transform active:scale-95 text-xs"
+                    >
+                        <Droplets size={20} className="animate-pulse" /> Marcar como regada
+                    </button>
+
+                    <div className="flex gap-3">
+                        {!isDeleting ? (
+                            <button
+                                onClick={() => setIsDeleting(true)}
+                                className="flex-1 py-4 rounded-xl bg-white/5 border border-white/5 text-white/40 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
+                            >
+                                <Trash2 size={16} /> Eliminar Planta
+                            </button>
+                        ) : (
+                            <div className="flex-1 flex gap-2 animate-in fade-in slide-in-from-bottom-2">
+                                <button
+                                    onClick={() => setIsDeleting(false)}
+                                    className="flex-1 py-4 rounded-xl bg-white/5 text-white/40 font-black text-[10px] uppercase tracking-widest"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        onDeletePlant(plant.id);
+                                        onClose();
+                                    }}
+                                    className="flex-[2] py-4 rounded-xl bg-red-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-red-500/20"
+                                >
+                                    Confirmar Eliminar
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </Modal>
     );
