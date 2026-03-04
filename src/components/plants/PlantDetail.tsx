@@ -78,7 +78,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
             downloadLink.href = `${pngFile}`;
             downloadLink.click();
         };
-        img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+        img.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgData)))}`;
     };
 
     const lightIcons = {
@@ -88,10 +88,10 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
     };
 
     const stats = {
-        avgInterval: plant.wateringHistory.length > 1
+        avgInterval: (plant.wateringHistory && plant.wateringHistory.length > 1)
             ? Math.round(
-                (plant.wateringHistory[plant.wateringHistory.length - 1].date.toDate().getTime() -
-                    plant.wateringHistory[0].date.toDate().getTime()) /
+                ((plant.wateringHistory[plant.wateringHistory.length - 1].date?.toDate?.()?.getTime() || 0) -
+                    (plant.wateringHistory[0].date?.toDate?.()?.getTime() || 0)) /
                 (plant.wateringHistory.length - 1) /
                 (1000 * 60 * 60 * 24)
             )
@@ -104,7 +104,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                 {/* Hero section with Full Image */}
                 <div className="relative h-64 md:h-80 w-full rounded-2xl overflow-hidden shadow-2xl group">
                     <Image
-                        src={plant.photo.fullUrl}
+                        src={plant.photo?.fullUrl || "/placeholder-plant.png"}
                         alt={plant.nickname}
                         fill
                         className="object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -249,7 +249,11 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                                                     </div>
                                                     <div>
                                                         <p className="text-xs font-bold text-white">Riego {event.wasAutomatic ? 'Automático' : 'Manual'}</p>
-                                                        <p className="text-[10px] text-white/30">{event.date.toDate().toLocaleDateString()} - {event.date.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                        <p className="text-[10px] text-white/30">
+                                                            {event.date?.toDate?.() ? (
+                                                                `${event.date.toDate().toLocaleDateString()} - ${event.date.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                                                            ) : 'Fecha desconocida'}
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <ChevronRight size={14} className="text-white/10" />
@@ -346,14 +350,14 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                                             <div className="flex items-center gap-3">
                                                 <div className={cn(
                                                     "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
-                                                    task.nextDueAt.toDate() <= new Date() ? "bg-amber-500/20 text-amber-500" : "bg-white/5 text-white/20"
+                                                    (task.nextDueAt?.toDate?.() || new Date()) <= new Date() ? "bg-amber-500/20 text-amber-500" : "bg-white/5 text-white/20"
                                                 )}>
                                                     <CheckCircle2 size={18} />
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-bold text-white uppercase tracking-wider">{task.type}</p>
                                                     <p className="text-[10px] text-white/30 italic">
-                                                        Cada {task.frequencyDays}d • Siguiente: {task.nextDueAt.toDate().toLocaleDateString()}
+                                                        Cada {task.frequencyDays}d • Siguiente: {task.nextDueAt?.toDate?.() ? task.nextDueAt.toDate().toLocaleDateString() : 'Pendiente'}
                                                     </p>
                                                 </div>
                                             </div>
