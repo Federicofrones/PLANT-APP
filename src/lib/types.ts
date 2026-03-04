@@ -14,6 +14,7 @@ export interface Plant {
     lastWateredAt: Timestamp;
     nextWaterAt: Timestamp;
     photo: PlantPhoto;
+    isOutdoor: boolean;
 }
 
 export interface UserDoc {

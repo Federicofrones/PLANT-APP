@@ -12,22 +12,52 @@ export function formatDate(date: Date): string {
     }).format(date);
 }
 
-export function calculateWateringStatus(lastWateredAt: Date, nextWaterAt: Date) {
-    const now = new Date();
-    const total = nextWaterAt.getTime() - lastWateredAt.getTime();
-    const elapsed = now.getTime() - lastWateredAt.getTime();
-    const progress = Math.min(Math.max(elapsed / total, 0), 1);
+export interface WeatherInfo {
+    temp: number;
+    rain: number;
+    humidity: number;
+}
 
-    const diffTime = nextWaterAt.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+export function calculateWateringStatus(
+    lastWateredAt: Date,
+    nextWaterAt: Date,
+    isOutdoor: boolean = false,
+    weather?: WeatherInfo
+) {
+    const now = new Date();
+    let total = nextWaterAt.getTime() - lastWateredAt.getTime();
+    let elapsed = now.getTime() - lastWateredAt.getTime();
+
+    // Smart adjustment for outdoors
+    let weatherBonus = "";
+    if (isOutdoor && weather) {
+        // If it's hot (>30°C), demand increases (fake elapsed time goes up)
+        if (weather.temp > 30) {
+            elapsed += (1000 * 60 * 60 * 12); // Add half a day of "thirst"
+            weatherBonus = "🔥 Mucho calor";
+        }
+        // If it's raining (>0.5mm), demand decreases (fake elapsed time goes down)
+        if (weather.rain > 0.5) {
+            elapsed -= (1000 * 60 * 60 * 24); // Subtract a full day of "thirst"
+            weatherBonus = "🌧️ Regada por lluvia";
+        }
+        // High humidity also helps
+        if (weather.humidity > 80 && weather.temp < 25) {
+            elapsed -= (1000 * 60 * 60 * 6); // Subtract 6 hours
+        }
+    }
+
+    const progress = Math.min(Math.max(elapsed / total, 0), 1);
+    const remainingTime = total - elapsed;
+    const diffDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
 
     let statusText = "";
     let statusColor = "bg-emerald-500/30 text-emerald-300";
 
     if (diffDays > 0) {
-        statusText = `Faltan ${diffDays} día${diffDays > 1 ? "s" : ""}`;
+        statusText = weatherBonus || `Faltan ${diffDays} día${diffDays > 1 ? "s" : ""}`;
     } else if (diffDays === 0) {
-        statusText = "Hoy toca regar";
+        statusText = weatherBonus === "🌧️ Regada por lluvia" ? "Lluvia reciente" : "Hoy toca regar";
         statusColor = "bg-amber-500/30 text-amber-300 shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]";
     } else {
         const overdue = Math.abs(diffDays);
@@ -35,5 +65,5 @@ export function calculateWateringStatus(lastWateredAt: Date, nextWaterAt: Date) 
         statusColor = "bg-red-500/30 text-red-300 shadow-[0_0_15px_-3px_rgba(239,68,68,0.2)]";
     }
 
-    return { progress, statusText, statusColor, diffDays };
+    return { progress, statusText, statusColor, diffDays, weatherBonus };
 }

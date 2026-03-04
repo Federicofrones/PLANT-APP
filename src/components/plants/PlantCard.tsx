@@ -13,6 +13,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plant } from "@/lib/types";
 import { cn, calculateWateringStatus } from "@/lib/utils";
 import GlassCard from "@/components/ui/GlassCard";
+import { useWeather } from "@/hooks/useWeather";
+import { Cloud, Home } from "lucide-react";
 
 interface PlantCardProps {
     plant: Plant;
@@ -23,16 +25,30 @@ interface PlantCardProps {
 
 const PlantCard = ({ plant, onWater, onEdit, onDelete }: PlantCardProps) => {
     const [showMenu, setShowMenu] = useState(false);
-    const [status, setStatus] = useState(calculateWateringStatus(plant.lastWateredAt.toDate(), plant.nextWaterAt.toDate()));
+    const weather = useWeather();
+    const [status, setStatus] = useState(calculateWateringStatus(
+        plant.lastWateredAt.toDate(),
+        plant.nextWaterAt.toDate(),
+        plant.isOutdoor,
+        weather.loading ? undefined : weather
+    ));
 
-    // Update status every minute
+    // Update status every minute or when weather changes
     useEffect(() => {
-        const timer = setInterval(() => {
-            setStatus(calculateWateringStatus(plant.lastWateredAt.toDate(), plant.nextWaterAt.toDate()));
-        }, 60000);
+        const updateStatus = () => {
+            setStatus(calculateWateringStatus(
+                plant.lastWateredAt.toDate(),
+                plant.nextWaterAt.toDate(),
+                plant.isOutdoor,
+                weather.loading ? undefined : weather
+            ));
+        };
+
+        updateStatus();
+        const timer = setInterval(updateStatus, 60000);
 
         return () => clearInterval(timer);
-    }, [plant.lastWateredAt, plant.nextWaterAt]);
+    }, [plant.lastWateredAt, plant.nextWaterAt, plant.isOutdoor, weather]);
 
     const { progress, statusText, statusColor, diffDays } = status;
 
@@ -55,12 +71,21 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete }: PlantCardProps) => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0c0a]/80 via-transparent to-transparent" />
 
-                    {/* Status Badge */}
-                    <div className={cn(
-                        "absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-md transition-all",
-                        statusColor
-                    )}>
-                        {statusText}
+                    {/* Status Badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                        <div className={cn(
+                            "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md transition-all shadow-lg border border-white/5",
+                            statusColor
+                        )}>
+                            {statusText}
+                        </div>
+                        <div className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/40 text-white/70 backdrop-blur-md flex items-center gap-1.5 border border-white/5 w-fit">
+                            {plant.isOutdoor ? (
+                                <><Cloud size={10} className="text-blue-400" /> Exterior</>
+                            ) : (
+                                <><Home size={10} className="text-amber-400" /> Interior</>
+                            )}
+                        </div>
                     </div>
 
                     {/* Menu Trigger */}

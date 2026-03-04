@@ -18,6 +18,7 @@ import PlantCard from "@/components/plants/PlantCard";
 import PlantModal from "@/components/plants/PlantModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import Navbar from "@/components/layout/Navbar";
+import WeatherBar from "@/components/ui/WeatherBar";
 import GlassCard from "@/components/ui/GlassCard";
 import { cn } from "@/lib/utils";
 
@@ -78,8 +79,9 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="pt-24 pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-8">
+        <div className="pt-24 pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
             <Navbar />
+            <WeatherBar />
 
             {/* Hero / Header Section */}
             <section className="space-y-6">

@@ -33,6 +33,7 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
         plantType: "",
         waterEveryDays: 7,
         lastWateredAt: new Date().toISOString().split("T")[0],
+        isOutdoor: false,
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -48,6 +49,7 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                 plantType: initialData.plantType,
                 waterEveryDays: initialData.waterEveryDays,
                 lastWateredAt: initialData.lastWateredAt.toDate().toISOString().split("T")[0],
+                isOutdoor: initialData.isOutdoor || false,
             });
             setPreviewUrl(initialData.photo.thumbUrl);
         } else {
@@ -56,6 +58,7 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                 plantType: "",
                 waterEveryDays: 7,
                 lastWateredAt: new Date().toISOString().split("T")[0],
+                isOutdoor: false,
             });
             setPreviewUrl(null);
             setSelectedFile(null);
@@ -234,6 +237,33 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                             </div>
                         </div>
                     </div>
+
+                    {/* Indoor/Outdoor Toggle */}
+                    <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 px-1">UBICACIÓN</label>
+                        <div className="flex bg-white/5 p-1 rounded-xl gap-1 border border-white/5">
+                            <button
+                                type="button"
+                                onClick={() => setFormData(p => ({ ...p, isOutdoor: false }))}
+                                className={cn(
+                                    "flex-1 py-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2",
+                                    !formData.isOutdoor ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:bg-white/5"
+                                )}
+                            >
+                                Interior
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setFormData(p => ({ ...p, isOutdoor: true }))}
+                                className={cn(
+                                    "flex-1 py-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2",
+                                    formData.isOutdoor ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:bg-white/5"
+                                )}
+                            >
+                                Exterior
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Submit */}
@@ -257,7 +287,7 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                     )}
                 </button>
             </form>
-        </Modal>
+        </Modal >
     );
 };
 
