@@ -115,7 +115,7 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete }: PlantCardProps) => {
                     </div>
 
                     <div className="space-y-4">
-                        {/* Hose-style Progress Bar */}
+                        {/* Improved Hose-style Progress Bar */}
                         <div className="space-y-2">
                             <div className="flex justify-between items-end text-[10px] uppercase tracking-widest font-black">
                                 <span className="text-white/30">Nivel de Agua</span>
@@ -128,30 +128,38 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete }: PlantCardProps) => {
                                 </span>
                             </div>
 
-                            {/* The Hose */}
-                            <div className="relative w-full h-4 bg-black/40 rounded-full border-2 border-emerald-950/50 p-[2px] shadow-inner overflow-hidden group/hose">
+                            {/* The Hose Container with Ribbed Effect */}
+                            <div className="relative w-full h-5 bg-[#051a0d] rounded-full border-2 border-emerald-900/50 p-[3px] shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] overflow-hidden group/hose">
+                                {/* Ribbed Texture Overlay */}
+                                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.5) 50%)', backgroundSize: '8px 100%' }} />
+
                                 {/* Water Flow */}
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${(1 - progress) * 100}%` }}
                                     transition={{ duration: 1.5, ease: "easeInOut" }}
                                     className={cn(
-                                        "h-full rounded-full relative overflow-hidden",
-                                        diffDays < 0 ? "bg-red-500/80" : diffDays === 0 ? "bg-amber-500/80" : "bg-emerald-500/80"
+                                        "h-full rounded-full relative overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+                                        diffDays < 0 ? "bg-red-500" : diffDays === 0 ? "bg-amber-500" : "bg-emerald-500"
                                     )}
                                 >
-                                    {/* Wave Effect */}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                                    {/* Liquid Depth Gradient */}
+                                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/20" />
 
-                                    {/* Small Bubbles */}
-                                    <div className="absolute inset-y-0 right-2 flex items-center gap-1 opacity-40">
-                                        <div className="w-1 h-1 bg-white rounded-full animate-ping" />
-                                        <div className="w-0.5 h-0.5 bg-white rounded-full animate-ping delay-75" />
+                                    {/* Rapid Wave Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+
+                                    {/* Bubbles */}
+                                    <div className="absolute inset-y-0 right-2 flex items-center gap-1.5 opacity-60">
+                                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping shadow-[0_0_8px_white]" />
+                                        <div className="w-1 h-1 bg-white rounded-full animate-ping delay-150" />
                                     </div>
                                 </motion.div>
 
-                                {/* Nozzle / End of hose */}
-                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-5 bg-emerald-700 rounded-sm border border-emerald-900 group-hover/hose:scale-110 transition-transform" />
+                                {/* Detailed Nozzle */}
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-6 bg-gradient-to-b from-emerald-600 to-emerald-800 rounded-sm border border-emerald-400/30 group-hover/hose:scale-110 transition-transform shadow-lg z-10 flex items-center justify-center">
+                                    <div className="w-1 h-4 bg-emerald-950/40 rounded-full" />
+                                </div>
                             </div>
                         </div>
 

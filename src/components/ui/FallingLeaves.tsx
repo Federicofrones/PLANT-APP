@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LeafIcon = ({ color }: { color: string }) => (
@@ -18,28 +18,40 @@ const LeafIcon = ({ color }: { color: string }) => (
 const FallingLeaves = () => {
     const [leaves, setLeaves] = useState<{ id: number; x: number; duration: number; delay: number; scale: number; rotation: number }[]>([]);
 
-    const spawnLeaves = () => {
+    const spawnLeaves = useCallback(() => {
+        // Only spawn if tab is active
+        if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
+            return;
+        }
+
         const newLeaves = Array.from({ length: 15 }).map((_, i) => ({
             id: Date.now() + i,
             x: Math.random() * 100, // percentage
-            duration: 5 + Math.random() * 5,
-            delay: Math.random() * 2,
-            scale: 0.5 + Math.random() * 1,
+            duration: 6 + Math.random() * 6, // Slightly slower, more graceful
+            delay: Math.random() * 3,
+            scale: 0.6 + Math.random() * 0.8,
             rotation: Math.random() * 360,
         }));
         setLeaves(newLeaves);
 
-        // Clear leaves after animation
+        // Clear leaves after animation to keep DOM clean
         setTimeout(() => {
             setLeaves([]);
-        }, 12000);
-    };
+        }, 15000);
+    }, []);
 
     useEffect(() => {
-        spawnLeaves(); // Initial spawn
-        const interval = setInterval(spawnLeaves, 30000);
-        return () => clearInterval(interval);
-    }, []);
+        // Initial delay so it doesn't happen exactly on load every time
+        const initialDelay = setTimeout(spawnLeaves, 5000);
+
+        // Set interval to 60 seconds
+        const interval = setInterval(spawnLeaves, 60000);
+
+        return () => {
+            clearTimeout(initialDelay);
+            clearInterval(interval);
+        };
+    }, [spawnLeaves]);
 
     return (
         <div className="fixed inset-0 pointer-events-none z-[60] overflow-hidden">
@@ -50,7 +62,7 @@ const FallingLeaves = () => {
                         initial={{ y: -50, x: `${leaf.x}vw`, opacity: 0, rotate: leaf.rotation }}
                         animate={{
                             y: "110vh",
-                            x: `${leaf.x + (Math.random() * 20 - 10)}vw`,
+                            x: `${leaf.x + (Math.random() * 30 - 15)}vw`,
                             opacity: [0, 1, 1, 0],
                             rotate: leaf.rotation + 360,
                         }}
