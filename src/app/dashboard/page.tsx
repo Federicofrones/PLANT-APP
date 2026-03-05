@@ -131,7 +131,7 @@ const Dashboard = () => {
     }, [plants, search, filters]);
 
     const needsWaterNow = useMemo(() =>
-        plants.filter(p => !p.isArchived && p.nextWaterAt.toDate() <= new Date()),
+        plants.filter(p => !p.isArchived && p.nextWaterAt?.toDate?.() <= new Date()),
         [plants]);
 
     const stats = {
@@ -309,8 +309,8 @@ const Dashboard = () => {
 
                             <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-8 border-white/5 shadow-2xl">
                                 <Image
-                                    src={currentRoutePlant.photo.fullUrl}
-                                    alt={currentRoutePlant.nickname}
+                                    src={currentRoutePlant.photo?.fullUrl || "/placeholder-plant.png"}
+                                    alt={currentRoutePlant.nickname || "Planta"}
                                     fill
                                     className="object-cover"
                                 />

@@ -35,8 +35,8 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete, onSnooze, onArchive, onDu
     const [showMenu, setShowMenu] = useState(false);
     const weather = useWeather();
     const [status, setStatus] = useState(calculateWateringStatus(
-        plant.lastWateredAt.toDate(),
-        plant.nextWaterAt.toDate(),
+        plant.lastWateredAt?.toDate?.() || new Date(),
+        plant.nextWaterAt?.toDate?.() || new Date(),
         plant.isOutdoor,
         weather.loading ? undefined : weather
     ));
@@ -44,8 +44,8 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete, onSnooze, onArchive, onDu
     useEffect(() => {
         const updateStatus = () => {
             setStatus(calculateWateringStatus(
-                plant.lastWateredAt.toDate(),
-                plant.nextWaterAt.toDate(),
+                plant.lastWateredAt?.toDate?.() || new Date(),
+                plant.nextWaterAt?.toDate?.() || new Date(),
                 plant.isOutdoor,
                 weather.loading ? undefined : weather
             ));
@@ -77,8 +77,8 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete, onSnooze, onArchive, onDu
                 {/* Plant Image Container */}
                 <div className="relative h-48 w-full overflow-hidden bg-emerald-950/20 rounded-t-[1.5rem]">
                     <Image
-                        src={plant.photo.thumbUrl}
-                        alt={plant.nickname}
+                        src={plant.photo?.thumbUrl || "/placeholder-plant.png"}
+                        alt={plant.nickname || "Planta"}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -220,7 +220,7 @@ const PlantCard = ({ plant, onWater, onEdit, onDelete, onSnooze, onArchive, onDu
                         <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-[0.15em] text-white/20">
                             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/[0.02]">
                                 <Calendar size={10} />
-                                <span>Último: {plant.lastWateredAt.toDate().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</span>
+                                <span>Último: {plant.lastWateredAt?.toDate?.()?.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) || "N/A"}</span>
                             </div>
                             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/[0.02]">
                                 <Moon size={10} />

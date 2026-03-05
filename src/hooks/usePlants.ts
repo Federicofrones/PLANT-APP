@@ -86,7 +86,7 @@ export const usePlants = (includeArchived = false) => {
                 throw new Error(`Has alcanzado el límite de ${PLANT_LIMIT} plantas.`);
             }
 
-            const nextWaterAt = new Date(plantData.lastWateredAt.toDate());
+            const nextWaterAt = new Date(plantData.lastWateredAt?.toDate?.() || new Date());
             nextWaterAt.setDate(nextWaterAt.getDate() + plantData.waterEveryDays);
 
             const newPlantRef = doc(collection(db, "users", user.uid, "plants"));
@@ -113,7 +113,7 @@ export const usePlants = (includeArchived = false) => {
             const snap = await getDoc(plantRef);
             const current = snap.data() as Plant;
             const days = updates.waterEveryDays ?? current.waterEveryDays;
-            const last = (updates.lastWateredAt ?? current.lastWateredAt).toDate();
+            const last = (updates.lastWateredAt ?? current.lastWateredAt)?.toDate?.() || new Date();
             const next = new Date(last);
             next.setDate(next.getDate() + (days));
             updates.nextWaterAt = Timestamp.fromDate(next);
@@ -160,7 +160,7 @@ export const usePlants = (includeArchived = false) => {
         const snap = await getDoc(plantRef);
         const current = snap.data() as Plant;
 
-        const next = current.nextWaterAt.toDate();
+        const next = current.nextWaterAt?.toDate?.() || new Date();
         next.setDate(next.getDate() + days);
 
         await updateDoc(plantRef, {

@@ -62,7 +62,7 @@ const PlantModal = ({ isOpen, onClose, onSave, initialData, isLimitReached }: Pl
                 nickname: initialData.nickname,
                 plantType: initialData.plantType || "",
                 waterEveryDays: initialData.waterEveryDays,
-                lastWateredAt: initialData.lastWateredAt.toDate().toISOString().split("T")[0],
+                lastWateredAt: initialData.lastWateredAt?.toDate?.()?.toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
                 isOutdoor: initialData.isOutdoor || false,
                 location: initialData.location || "",
                 light: initialData.light || "semisombra",

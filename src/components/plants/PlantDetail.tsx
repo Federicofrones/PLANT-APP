@@ -199,7 +199,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                                         <TagIcon size={14} className="text-emerald-500/40" /> Tags
                                     </div>
                                     <div className="flex flex-wrap gap-2 text-xs">
-                                        {plant.tags.length > 0 ? plant.tags.map(t => (
+                                        {plant.tags && plant.tags.length > 0 ? plant.tags.map(t => (
                                             <span key={t} className="px-2 py-1 bg-white/5 rounded-lg border border-white/5 text-white/60">#{t}</span>
                                         )) : <span className="text-white/20 italic">Sin etiquetas</span>}
                                     </div>
@@ -230,7 +230,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                             <div className="grid grid-cols-2 gap-4">
                                 <GlassCard className="p-4 flex flex-col items-center text-center">
                                     <span className="text-[8px] uppercase font-black text-white/20 mb-1">Riegos Totales</span>
-                                    <span className="text-2xl font-black text-emerald-400">{plant.wateringHistory.length}</span>
+                                    <span className="text-2xl font-black text-emerald-400">{plant.wateringHistory?.length || 0}</span>
                                 </GlassCard>
                                 <GlassCard className="p-4 flex flex-col items-center text-center">
                                     <span className="text-[8px] uppercase font-black text-white/20 mb-1">Frecuencia Real</span>
@@ -240,7 +240,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
 
                             <GlassCard className="p-2 overflow-hidden">
                                 <div className="max-h-60 overflow-y-auto custom-scrollbar px-2 space-y-1">
-                                    {plant.wateringHistory.length > 0 ? (
+                                    {plant.wateringHistory && plant.wateringHistory.length > 0 ? (
                                         [...plant.wateringHistory].reverse().map((event, i) => (
                                             <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
                                                 <div className="flex items-center gap-3">
@@ -266,7 +266,7 @@ const PlantDetail = ({ plant, isOpen, onClose, onWater, onAddTask, onCompleteTas
                             </GlassCard>
 
                             {/* Auto-suggestion */}
-                            {plant.wateringHistory.length >= 3 && Math.abs(stats.avgInterval - plant.waterEveryDays) >= 1 && (
+                            {plant.wateringHistory && plant.wateringHistory.length >= 3 && Math.abs(stats.avgInterval - plant.waterEveryDays) >= 1 && (
                                 <motion.div
                                     initial={{ scale: 0.9, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
